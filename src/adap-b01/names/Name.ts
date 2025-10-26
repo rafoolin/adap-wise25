@@ -19,7 +19,7 @@ export class Name {
     private components: string[] = [];
 
     /** Expects that all Name components are properly masked 
-     * @methodType constructor
+     * @methodType initialization-method (mutation)
      */
     constructor(other: string[], delimiter?: string) {
         // throw new Error("needs implementation or deletion");
