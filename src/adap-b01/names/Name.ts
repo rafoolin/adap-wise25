@@ -18,7 +18,9 @@ export class Name {
     private delimiter: string = DEFAULT_DELIMITER;
     private components: string[] = [];
 
-    /** Expects that all Name components are properly masked */
+    /** Expects that all Name components are properly masked 
+     * @methodType constructor
+     */
     constructor(other: string[], delimiter?: string) {
         // throw new Error("needs implementation or deletion");
         this.components = [...other];
@@ -29,6 +31,7 @@ export class Name {
      * Returns a human-readable representation of the Name instance using user-set special characters
      * Special characters are not escaped (creating a human-readable string)
      * Users can vary the delimiter character to be used
+     * @methodType conversion-method (query)
      */
     public asString(delimiter: string = this.delimiter): string {
         // throw new Error("needs implementation or deletion");
@@ -39,13 +42,16 @@ export class Name {
      * Returns a machine-readable representation of Name instance using default special characters
      * Machine-readable means that from a data string, a Name can be parsed back in
      * The special characters in the data string are the default characters
+     * @methodType conversion-method (query)
      */
     public asDataString(): string {
         // throw new Error("needs implementation or deletion");
-        return this.components.join(this.delimiter);
+        return this.components.join(DEFAULT_DELIMITER);
     }
 
-    /** Returns properly masked component string */
+    /** Returns properly masked component string 
+     * @methodType get-method (query)
+     */
     public getComponent(i: number): string {
         // throw new Error("needs implementation or deletion");
         this.validateIndex(i);
@@ -53,32 +59,43 @@ export class Name {
 
     }
 
-    /** Expects that new Name component c is properly masked */
+    /** Expects that new Name component c is properly masked
+     * @methodType set-method (mutation)
+     */
     public setComponent(i: number, c: string): void {
         // throw new Error("needs implementation or deletion");
         this.validateIndex(i);
         this.components[i] = c;
     }
 
-    /** Returns number of components in Name instance */
+    /** Returns number of components in Name instance
+     * @methodType get-method (query)
+     */
     public getNoComponents(): number {
         // throw new Error("needs implementation or deletion");
         return this.components.length;
     }
 
-    /** Expects that new Name component c is properly masked */
+    /** Expects that new Name component c is properly masked 
+     * @methodType command-method (mutation)
+     */
     public insert(i: number, c: string): void {
         // throw new Error("needs implementation or deletion");
         this.validateIndex(i);
         this.components.splice(i, 0, c);
     }
 
-    /** Expects that new Name component c is properly masked */
+    /** Expects that new Name component c is properly masked
+     * @methodType command-method (mutation)
+     */
     public append(c: string): void {
         // throw new Error("needs implementation or deletion");
         this.components.push(c);
     }
 
+    /** Removes the component at the given index.
+     * @methodType command-method (mutation)
+     */
     public remove(i: number): void {
         // throw new Error("needs implementation or deletion");
         this.validateIndex(i);
@@ -88,6 +105,7 @@ export class Name {
     /** 
      * Check if the index is in the correct range; otherwise throws an exception.
      * 
+     * @methodType helper-method
      * @param i index 
      */
     private validateIndex(i: number): void {
