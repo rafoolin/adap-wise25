@@ -52,8 +52,8 @@ export class StringName extends AbstractName {
         let cur = "";
         let escaped = false;
 
-        for (let i = 0; i < this.name.length; i++) {
-            const ch = this.name[i];
+        for (let j = 0; j < this.name.length; j++) {
+            const ch = this.name[j];
 
             if (escaped) {
                 cur += ch;
