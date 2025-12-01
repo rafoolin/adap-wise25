@@ -1,11 +1,12 @@
 import { Node } from "./Node";
 import { Directory } from "./Directory";
-import { MethodFailedException } from "../common/MethodFailedException";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 enum FileState {
     OPEN,
     CLOSED,
-    DELETED        
+    DELETED
 };
 
 export class File extends Node {
@@ -17,16 +18,21 @@ export class File extends Node {
     }
 
     public open(): void {
-        // do something
+        InvalidStateException.assert(this.state !== FileState.DELETED, "Cannot open deleted file");
+        InvalidStateException.assert(this.state !== FileState.OPEN, "File already open");
+        this.state = FileState.OPEN;
     }
 
     public read(noBytes: number): Int8Array {
-        // read something
-        return new Int8Array();
+        IllegalArgumentException.assert(noBytes > 0, "Read size must be positive");
+        InvalidStateException.assert(this.state === FileState.OPEN, "Cannot read closed or deleted file");
+        return new Int8Array(noBytes);
     }
 
     public close(): void {
-        // do something
+        InvalidStateException.assert(this.state !== FileState.DELETED, "Cannot close deleted file");
+        InvalidStateException.assert(this.state === FileState.OPEN, "File not open");
+        this.state = FileState.CLOSED;
     }
 
     protected doGetFileState(): FileState {

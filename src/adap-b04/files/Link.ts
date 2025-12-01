@@ -1,11 +1,13 @@
 import { Node } from "./Node";
 import { Directory } from "./Directory";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
 
 export class Link extends Node {
 
     protected targetNode: Node | null = null;
 
     constructor(bn: string, pn: Directory, tn?: Node) {
+        IllegalArgumentException.assert(tn !== null && tn !== undefined, "Link target cannot be null");
         super(bn, pn);
 
         if (tn != undefined) {
@@ -18,6 +20,7 @@ export class Link extends Node {
     }
 
     public setTargetNode(target: Node): void {
+        IllegalArgumentException.assert(target !== null, "Target cannot be null");
         this.targetNode = target;
     }
 
