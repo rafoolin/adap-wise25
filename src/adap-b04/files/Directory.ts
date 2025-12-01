@@ -7,6 +7,8 @@ export class Directory extends Node {
     protected childNodes: Set<Node> = new Set<Node>();
 
     constructor(bn: string, pn: Directory) {
+        IllegalArgumentException.assert(bn !== null, "Base name cannot be null");
+        IllegalArgumentException.assert(pn !== null, "Parent directory cannot be null");
         super(bn, pn);
     }
 
