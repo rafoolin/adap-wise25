@@ -40,7 +40,7 @@ describe("Basic naming test", () => {
     // // Find the ls node
     const ls: Node = [...result][0];
     const expected = new StringName("/usr/bin/ls", '/');
-    expect(ls.getFullName().asString('/')).toBe(expected.asString('/'));
+    expect(ls.getFullName().asString()).toBe(expected.asString());
   });
 });
 
@@ -89,7 +89,7 @@ describe("Directory tree traversal test", () => {
     expect(bins.size).toBe(1);
 
     const bin = [...bins][0];
-    expect(bin.getFullName().asString('/')).toBe("/usr/bin");
+    expect(bin.getFullName().asString()).toBe("/usr/bin");
   });
 });
 
@@ -118,7 +118,7 @@ describe("Recursive findNodes test", () => {
 
     expect(results.size).toBe(1);
     const bash = [...results][0];
-    expect(bash.getFullName().asString('/')).toBe("/home/riehle/.bashrc");
+    expect(bash.getFullName().asString()).toBe("/home/riehle/.bashrc");
   });
 });
 
@@ -126,8 +126,8 @@ describe("Buggy setup test", () => {
   it("findNodes should throw ServiceFailureException", () => {
     try {
       const fs = createBuggySetup();
-      fs.findNodes("ls");   // should explode
-      expect(false).toBe(true); // force fail if no exception
+      fs.findNodes("ls");
+      expect(false).toBe(true);
     } catch (er) {
       let ex = er as Exception;
 
