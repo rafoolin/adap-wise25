@@ -133,6 +133,13 @@ export class StringName extends AbstractName {
             .replaceAll(ESCAPE_CHARACTER, ESCAPE_CHARACTER + ESCAPE_CHARACTER)
             .replaceAll(this.delimiter, ESCAPE_CHARACTER + this.delimiter);
 
+        // Empty string should be similar to ["", "delimiter"]
+        if (this.noComponents === 0 && this.name === "") {
+            this.name = this.delimiter + escapedComponent;
+            this.noComponents = 2;
+            return;
+        }
+
         if (this.name.length > 0) {
             this.name += this.delimiter + escapedComponent;
         } else {

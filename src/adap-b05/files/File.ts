@@ -1,11 +1,12 @@
 import { Node } from "./Node";
 import { Directory } from "./Directory";
-import { MethodFailedException } from "../common/MethodFailedException";
+import { IllegalArgumentException } from "../../../src/adap-b05/common/IllegalArgumentException";
+import { InvalidStateException } from "../../../src/adap-b05/common/InvalidStateException";
 
 enum FileState {
     OPEN,
     CLOSED,
-    DELETED        
+    DELETED
 };
 
 export class File extends Node {
@@ -17,7 +18,9 @@ export class File extends Node {
     }
 
     public open(): void {
-        // do something
+        InvalidStateException.assert(this.state !== FileState.DELETED, "Cannot open deleted file");
+        InvalidStateException.assert(this.state !== FileState.OPEN, "File already open");
+        this.state = FileState.OPEN;
     }
 
     public read(noBytes: number): Int8Array {
@@ -28,7 +31,7 @@ export class File extends Node {
         for (let i: number = 0; i < noBytes; i++) {
             try {
                 result[i] = this.readNextByte();
-            } catch(ex) {
+            } catch (ex) {
                 tries++;
                 if (ex instanceof MethodFailedException) {
                     // Oh no! What @todo?!
@@ -43,8 +46,11 @@ export class File extends Node {
         return 0; // @todo
     }
 
+
     public close(): void {
-        // do something
+        InvalidStateException.assert(this.state !== FileState.DELETED, "Cannot close deleted file");
+        InvalidStateException.assert(this.state === FileState.OPEN, "File not open");
+        this.state = FileState.CLOSED;
     }
 
     protected doGetFileState(): FileState {

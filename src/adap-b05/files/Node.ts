@@ -1,5 +1,5 @@
-import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { InvalidStateException } from "../common/InvalidStateException";
+import { IllegalArgumentException } from "../../../src/adap-b05/common/IllegalArgumentException";
+import { InvalidStateException } from "../../../src/adap-b05/common/InvalidStateException";
 
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
@@ -10,20 +10,27 @@ export class Node {
     protected parentNode: Directory;
 
     constructor(bn: string, pn: Directory) {
+        IllegalArgumentException.assert(bn !== undefined && bn !== null, "Base name must not be null");
+        IllegalArgumentException.assert(pn !== undefined && pn !== null, "Parent node must not be null");
+
         this.doSetBaseName(bn);
         this.parentNode = pn; // why oh why do I have to set this
         this.initialize(pn);
     }
 
     protected initialize(pn: Directory): void {
+        IllegalArgumentException.assert(pn !== undefined && pn !== null, "Parent node must not be null");
         this.parentNode = pn;
         this.parentNode.addChildNode(this);
+        InvalidStateException.assert(this.parentNode !== undefined && this.parentNode !== null, "Parent node must not be null");
     }
 
     public move(to: Directory): void {
+        IllegalArgumentException.assert(to !== undefined && to !== null, "Target directory cannot be null");
         this.parentNode.removeChildNode(this);
         to.addChildNode(this);
         this.parentNode = to;
+        InvalidStateException.assert(this.parentNode !== undefined && this.parentNode !== null, "Parent node must not be null");
     }
 
     public getFullName(): Name {
@@ -41,7 +48,10 @@ export class Node {
     }
 
     public rename(bn: string): void {
+        IllegalArgumentException.assert(bn !== undefined && bn !== null, "Name cannot be null");
         this.doSetBaseName(bn);
+        InvalidStateException.assert(this.parentNode !== undefined && this.parentNode !== null, "Parent node must not be null");
+
     }
 
     protected doSetBaseName(bn: string): void {
@@ -57,7 +67,14 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        throw new Error("needs implementation or deletion");
+        IllegalArgumentException.assert(bn !== null, "Name to search cannot be null");
+        const result = new Set<Node>();
+
+        if (this.getBaseName() === bn) {
+            result.add(this);
+        }
+
+        return result;
     }
 
 }

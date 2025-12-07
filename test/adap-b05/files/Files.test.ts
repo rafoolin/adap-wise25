@@ -34,8 +34,13 @@ function createFileSystem(): RootNode {
 describe("Basic naming test", () => {
   it("test name checking", () => {
     let fs: RootNode = createFileSystem();
-    // let ls: Node = [...fs.findNodes("ls")][0];
-    // expect(ls.getFullName().asString()).toBe(new StringName("/usr/bin/ls", '/'));
+    const result = fs.findNodes("ls");
+
+    expect(result.size).toBeGreaterThan(0);
+    // // Find the ls node
+    const ls: Node = [...result][0];
+    const expected = new StringName("/usr/bin/ls", '/');
+    expect(ls.getFullName().asString('/')).toBe(expected.asString('/'));
   });
 });
 
@@ -64,14 +69,74 @@ describe("Buggy setup test", () => {
     try {
       let fs: RootNode = createBuggySetup();
       fs.findNodes("ls");
-    } catch(er) {
+    } catch (er) {
       threwException = true;
-      // let ex: Exception = er as Exception;
-      // expect(ex).toBeInstanceOf(ServiceFailureException);
-      // expect(ex.hasTrigger()).toBe(true);
-      // let tx: Exception = ex.getTrigger();
-      // expect(tx).toBeInstanceOf(InvalidStateException);
+      let ex: Exception = er as Exception;
+      expect(ex).toBeInstanceOf(ServiceFailureException);
+      expect(ex.hasTrigger()).toBe(true);
+      let tx: Exception = ex.getTrigger();
+      expect(tx).toBeInstanceOf(InvalidStateException);
     }
     expect(threwException).toBe(true);
+  });
+});
+
+// Custom tests
+describe("Directory tree traversal test", () => {
+  it("root should find all 'bin' directories deeply", () => {
+    let fs = createFileSystem();
+    const bins = fs.findNodes("bin");
+    expect(bins.size).toBe(1);
+
+    const bin = [...bins][0];
+    expect(bin.getFullName().asString('/')).toBe("/usr/bin");
+  });
+});
+
+describe("StringName absolute path semantics", () => {
+  it("empty StringName + append should create '/usr'", () => {
+    const n = new StringName("", '/');
+    n.append("usr");
+    expect(n.asString('/')).toBe("/usr");
+  });
+
+  it("StringName should interpret '/usr/bin/ls' correctly", () => {
+    const n = new StringName("/usr/bin/ls", '/');
+    expect(n.getNoComponents()).toBe(4);
+    expect(n.getComponent(0)).toBe("");
+    expect(n.getComponent(1)).toBe("usr");
+    expect(n.getComponent(2)).toBe("bin");
+    expect(n.getComponent(3)).toBe("ls");
+    expect(n.asString('/')).toBe("/usr/bin/ls");
+  });
+});
+
+describe("Recursive findNodes test", () => {
+  it("findNodes should recursively locate deeply nested files", () => {
+    let fs = createFileSystem();
+    let results = fs.findNodes(".bashrc");
+
+    expect(results.size).toBe(1);
+    const bash = [...results][0];
+    expect(bash.getFullName().asString('/')).toBe("/home/riehle/.bashrc");
+  });
+});
+
+describe("Buggy setup test", () => {
+  it("findNodes should throw ServiceFailureException", () => {
+    try {
+      const fs = createBuggySetup();
+      fs.findNodes("ls");   // should explode
+      expect(false).toBe(true); // force fail if no exception
+    } catch (er) {
+      let ex = er as Exception;
+
+      // Required by the exercise:
+      expect(ex).toBeInstanceOf(ServiceFailureException);
+      expect(ex.hasTrigger()).toBe(true);
+
+      let trigger = ex.getTrigger();
+      expect(trigger).toBeInstanceOf(InvalidStateException);
+    }
   });
 });
