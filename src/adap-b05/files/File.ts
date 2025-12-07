@@ -1,7 +1,7 @@
 import { Node } from "./Node";
 import { Directory } from "./Directory";
-import { IllegalArgumentException } from "../../../src/adap-b05/common/IllegalArgumentException";
 import { InvalidStateException } from "../../../src/adap-b05/common/InvalidStateException";
+import { MethodFailedException } from "../../adap-b05/common/MethodFailedException";
 
 enum FileState {
     OPEN,
