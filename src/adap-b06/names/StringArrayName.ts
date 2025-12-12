@@ -1,0 +1,99 @@
+import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
+import { Name } from "./Name";
+import { AbstractName } from "./AbstractName";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
+import { InvalidStateException } from "../common/InvalidStateException";
+
+export class StringArrayName extends AbstractName {
+
+    protected readonly components: string[];
+
+    constructor(source: string[], delimiter?: string) {
+        super(delimiter ?? DEFAULT_DELIMITER);
+        if (this.delimiter === undefined || this.delimiter === null || this.delimiter.length === 0) {
+            throw new InvalidStateException("Final delimiter must be a non-empty string");
+        }
+        if (source === undefined || source === null) {
+            throw new IllegalArgumentException("Source array must be defined and non-null");
+        }
+        this.components = [...source];
+    }
+
+    public asString(delimiter: string = this.delimiter): string {
+        return super.asString(delimiter);
+    }
+
+    public asDataString(): string {
+        return super.asDataString();
+    }
+
+    public isEqual(other: Name): boolean {
+        return super.isEqual(other);
+    }
+
+    public getHashCode(): number {
+        return super.getHashCode();
+    }
+
+    public isEmpty(): boolean {
+        return super.isEmpty();
+    }
+
+    public getDelimiterCharacter(): string {
+        return super.getDelimiterCharacter();
+    }
+
+    public getNoComponents(): number {
+        return this.components.length;
+    }
+
+    public getComponent(i: number): string {
+        this.validateIndex(i);
+        return this.components[i];
+    }
+
+    public setComponent(i: number, c: string): Name {
+        this.validateIndex(i);
+        let oldComponent = [...this.components];
+        oldComponent[i] = c;
+        return new StringArrayName(oldComponent, this.delimiter);
+    }
+
+    public insert(i: number, c: string): Name {
+        this.validateIndex(i);
+        let oldComponents = [...this.components];
+        oldComponents.splice(i, 0, c);
+        return new StringArrayName(oldComponents, this.delimiter);
+    }
+
+    public append(c: string): Name {
+        let oldComponents = [...this.components];
+        oldComponents.push(c);
+        return new StringArrayName(oldComponents, this.delimiter);
+    }
+
+    public remove(i: number): Name {
+        this.validateIndex(i);
+        let oldComponents = [...this.components];
+        oldComponents.splice(i, 1);
+        return new StringArrayName(oldComponents, this.delimiter);
+    }
+
+    public concat(other: Name): Name {
+        let newComponents: string[] = [...this.components];
+        for (let i = 0; i < other.getNoComponents(); i++) {
+            newComponents.push(other.getComponent(i));
+        }
+        return new StringArrayName(newComponents, this.delimiter);
+    }
+
+
+    /** 
+    * Check if the index is in the correct range; otherwise throws an exception.
+    * 
+    * @param i index 
+    */
+    private validateIndex(i: number): void {
+        IllegalArgumentException.assert(i >= 0 && i < this.components.length, `index out of range: ${i}`);
+    }
+}
