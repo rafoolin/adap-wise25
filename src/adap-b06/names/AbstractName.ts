@@ -51,9 +51,6 @@ export abstract class AbstractName implements Name {
         if (other === undefined || other === null) {
             return false;
         }
-        if ((other as any) === this) {
-            return true;
-        }
 
         if (this.getDelimiterCharacter() !== other.getDelimiterCharacter()) {
             return false;
